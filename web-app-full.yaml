@@ -74,6 +74,7 @@ Resources:
   SecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
+      GroupName: github-sg
       GroupDescription: 'Web server security group'
       VpcId: !Ref VPC
       SecurityGroupIngress:
