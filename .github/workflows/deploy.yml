@@ -1,0 +1,33 @@
+name: Deploy CloudFormation Stack
+
+on:
+  push:
+    branches:
+      - main  # 適宜デプロイしたいブランチ名に変更してください
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-1  # 必要に応じて変更
+
+      - name: Deploy CloudFormation stack
+        run: |
+          aws cloudformation deploy \
+            --template-file web-app-full.yaml \
+            --stack-name my-web-app-stack \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --parameter-overrides \
+              DomainName=a17.ope-education.link \
+              CertificateArn=arn:aws:acm:ap-northeast-1:655240555544:certificate/db13d66a-a87a-4993-b5e0-7ebc210c1e2a \
+              NotificationEmail=yu-yokota@openupitengineer.jp \
+            --no-fail-on-empty-changeset
